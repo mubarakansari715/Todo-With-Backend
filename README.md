@@ -144,7 +144,16 @@ const api = axios.create({
 
 This project is licensed under the MIT License.
 
-<img width="300" height="700" alt="image" src="https://github.com/user-attachments/assets/20e6bbf8-8285-433b-bac3-0cdec06ad699" />
+# Server Setup
+- Download file from the list **GoalTodoAppBackend.zip**
+- Start: **npm install**
+- run : **npm run db**
+  
+- Server connect successfully
+<img width="300" height="900" alt="image" src="https://github.com/user-attachments/assets/9dbb0afa-bba4-4dde-bb18-25f22e3c0f9b" />
+- Server is not Start: Server Offline
+<img width="300" height="700" alt="image" src="https://github.com/user-attachments/assets/5487d998-185e-4b9f-a10e-db5d2b7d4838" />
+
 
 
 ---
