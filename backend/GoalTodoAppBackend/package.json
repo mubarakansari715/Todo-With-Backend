@@ -1,0 +1,15 @@
+{
+  "name": "goaltodoappbackend",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "db":"json-server -w db.json"
+  },
+  "dependencies": {
+    "json-server": "^1.0.0-beta.3"
+  }
+}

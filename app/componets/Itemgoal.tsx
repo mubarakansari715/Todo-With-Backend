@@ -15,7 +15,7 @@ const Itemgoal = ({
         <Text style={styles.titlestyle}>My Goal is: </Text>
         <Text style={styles.subtitleStyle}>{title}</Text>
         <View style={{ height: 10 }} />
-        <Text style={styles.titlestyle}>My Goal is: </Text>
+        <Text style={styles.titlestyle}>My Description is: </Text>
         <Text style={styles.subtitleStyle}>{description}</Text>
       </TouchableOpacity>
 

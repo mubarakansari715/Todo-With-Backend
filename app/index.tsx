@@ -20,6 +20,7 @@ export default function Index() {
     goalsList: [],
   });
 
+  const [isoffline, setIsOffline] = useState(false);
   const [editGoal, setEditGoal] = useState(null);
   const title = useRef(null);
   const description = useRef(null);
@@ -71,24 +72,40 @@ export default function Index() {
       if (isDuplicate) {
         alert("This goal already exists!");
       } else {
-        const result = await jsonserver.post("/goalsList", {
-          title: value.title,
-          description: value.description,
-        });
+        if (isoffline) {
+          setValue((prev) => ({
+            ...prev,
+            goalsList: [
+              ...prev.goalsList,
+              {
+                id: Math.floor(Math.random() * 1000000),
+                title: value.title,
+                description: value.description,
+              },
+            ],
+            title: "",
+            description: "",
+          }));
+        } else {
+          const result = await jsonserver.post("/goalsList", {
+            title: value.title,
+            description: value.description,
+          });
 
-        setValue((prev) => ({
-          ...prev,
-          goalsList: [
-            ...prev.goalsList,
-            {
-              id: result.data.id,
-              title: value.title,
-              description: value.description,
-            },
-          ],
-          title: "",
-          description: "",
-        }));
+          setValue((prev) => ({
+            ...prev,
+            goalsList: [
+              ...prev.goalsList,
+              {
+                id: result.data.id,
+                title: value.title,
+                description: value.description,
+              },
+            ],
+            title: "",
+            description: "",
+          }));
+        }
       }
     }
 
@@ -136,16 +153,26 @@ export default function Index() {
   useEffect(() => {
     const fetchGoals = async () => {
       try {
-        const response = await jsonserver.get("/goalsList");
-        // Update the state with the fetched goals
-        if (response && response.data) {
-          setValue((prev) => ({
-            ...prev,
-            goalsList: response.data,
-          }));
+        if (!isoffline) {
+          const response = await jsonserver.get("/goalsList");
+          // Update the state with the fetched goals
+          if (response && response.data) {
+            setValue((prev) => ({
+              ...prev,
+              goalsList: response.data,
+            }));
+          }
+          setIsOffline(false);
         }
       } catch (error) {
         console.error("Error fetching goals:", error);
+        setIsOffline(true);
+         // Show user-friendly error message
+         Alert.alert(
+          "Connection Error",
+          "Unable to connect to the server. You can still add goals offline, but they won't be saved to the server.",
+          [{ text: "OK" }]
+        );
       }
     };
 
@@ -157,6 +184,12 @@ export default function Index() {
         <View style={style.container}>
           <Text style={style.textTitle}>Welcome to todo App</Text>
 
+          {isoffline && (
+            <Text style={style.offlineIndicator}>
+              ⚠️ Offline Mode - Changes won't sync to server
+            </Text>
+          )}
+
           <TextInput
             ref={title}
             style={style.inputTextStyle}
@@ -164,6 +197,7 @@ export default function Index() {
             onChangeText={(value) =>
               setValue((prev) => ({ ...prev, title: value }))
             }
+            placeholder="Enter your title"
           />
 
           <TextInput
@@ -173,6 +207,7 @@ export default function Index() {
             onChangeText={(value) =>
               setValue((prev) => ({ ...prev, description: value }))
             }
+            placeholder="Enter your description"
           />
           <TouchableOpacity
             style={style.buttonStyle}
@@ -245,6 +280,13 @@ const style = StyleSheet.create({
     fontSize: 18,
     marginTop: 20,
     fontWeight: "bold",
+    fontStyle: "italic",
+  },
+  offlineIndicator: {
+    fontSize: 14,
+    color: "orange",
+    textAlign: "center",
+    marginTop: 10,
     fontStyle: "italic",
   },
 });
